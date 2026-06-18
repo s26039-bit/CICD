@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    image: ${DOCKER_IMAGE:-cicd-demo}:${IMAGE_TAG:-latest}
+    container_name: cicd-demo-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - APP_VERSION=${IMAGE_TAG:-latest}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
